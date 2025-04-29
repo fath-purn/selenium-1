@@ -41,7 +41,7 @@ driver = webdriver.Chrome(service=service, options=chrome_options)
 driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
 # Buka 
-driver.get("https://otakudesu.cloud/complete-anime/")
+driver.get("https://otakudesu.cloud/complete-anime/page/2/")
 
 # Tunggu sebentar agar halaman dimuat
 time.sleep(2)
@@ -186,6 +186,13 @@ def get_anime_details():
         # Tambahkan anime ke list
         anime_data.append(anime_info)
 
+        # Simpan data langsung ke file JSON
+        with open("anime_data.json", "a", encoding="utf-8") as f:
+            json.dump(anime_info, f, ensure_ascii=False, indent=4)
+            f.write(",\n")  # Tambahkan pemisah antar objek
+
+        print(f"✅ Data anime '{anime_info['judul']}' telah disimpan.")
+
         return True
 
     except Exception as e:
@@ -261,6 +268,12 @@ with open("anime_data.json", "w", encoding="utf-8") as f:
     json.dump(anime_data, f, ensure_ascii=False, indent=4)
 
 print("Data anime telah disimpan ke anime_data.json")
+
+if KeyboardInterrupt:
+    print("\nScraping dihentikan oleh pengguna. Menyimpan data terakhir...")
+    with open("anime_data.json", "w", encoding="utf-8") as f:
+        json.dump(anime_data, f, ensure_ascii=False, indent=4)
+    print("Data berhasil disimpan. Program berhenti dengan aman.")
 
 # Tutup browser
 driver.quit()
